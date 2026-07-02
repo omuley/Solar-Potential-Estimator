@@ -21,8 +21,8 @@ export async function solarService(lat, long) {
 
     const sP = data.solarPotential;
     return {
-        maxCount: sP.maxArrayPanelsCount,
-        maxSunshine: sP.maxSunshineHoursPerYear
+        panelConfigs: sP.solarPanelConfigs,
+        maxCount: sP.maxArrayPanelsCount
         
       };
   
