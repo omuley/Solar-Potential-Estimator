@@ -1,7 +1,7 @@
-function App() {
+import InputForm from "./pages/InputForm"
+
+export default function App() {
   return (
-    <></>
+    <InputForm />
   )
 }
-
-export default App
