@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import AddressSearch from '../components/AddressSearch';
+import BackgroundMap from '../components/BackgroundMap';
 
 export default function InputForm() {
     const [addressData, setAddressData] = useState(null);
@@ -45,41 +46,52 @@ export default function InputForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-        <label htmlFor="address">Address</label>
-        <AddressSearch onSelect={setAddressData} />
+        <div style={{ position: 'relative', width: '100vw', height: '100vh'}}>
+            <BackgroundMap center={addressData ? [addressData.lat, addressData.lng] : undefined} />
+            <div style={{ position: 'relative', zIndex: 1, padding: '20px', maxWidth: '400px', backgroundColor: 'rgba(255, 255, 255, 0.9)', borderRadius: '8px', margin: '20px' }}>
+                <form onSubmit={handleSubmit}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <label htmlFor="address">Address</label>
+                        <AddressSearch onSelect={setAddressData} />
+                    </div>
 
-        {addressData && (
-            <p>
-            {addressData.address} ({addressData.lat.toFixed(5)}, {addressData.lng.toFixed(5)})
-            </p>
-        )}
+                    {addressData && (
+                        <p>
+                        {addressData.address} ({addressData.lat.toFixed(5)}, {addressData.lng.toFixed(5)})
+                        </p>
+                    )}
+                    
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <label htmlFor="electricityBill">Monthly Electricity Bill ($)</label>
+                        <input
+                            id="electricityBill"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            value={monthlyEBill}
+                            onChange={(e) => setEBill(e.target.value)}
+                            placeholder="e.g. 150"
+                        />
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <label htmlFor="energyUsage">Monthly Energy Usage (kWh)</label>
+                        <input
+                            id="energyUsage"
+                            type="number"
+                            min="0"
+                            step="1"
+                            value={monthlykWh}
+                            onChange={(e) => setkWhUsage(e.target.value)}
+                            placeholder="e.g. 900"
+                        />
+                    </div>
 
-        <label htmlFor="electricityBill">Monthly Electricity Bill ($)</label>
-        <input
-            id="electricityBill"
-            type="number"
-            min="0"
-            step="0.01"
-            value={monthlyEBill}
-            onChange={(e) => setEBill(e.target.value)}
-            placeholder="e.g. 150"
-        />
-
-        <label htmlFor="energyUsage">Monthly Energy Usage (kWh)</label>
-        <input
-            id="energyUsage"
-            type="number"
-            min="0"
-            step="1"
-            value={monthlykWh}
-            onChange={(e) => setkWhUsage(e.target.value)}
-            placeholder="e.g. 900"
-        />
-
-        <button type="submit" disabled={!isFormValid || submitting}>
-            {submitting ? 'Submitting…' : 'Getting Solar Data'}
-        </button>
-        </form>
+                    <button type="submit" disabled={!isFormValid || submitting}>
+                        {submitting ? 'Submitting…' : 'Getting Solar Data'}
+                    </button>
+                </form>
+            </div>
+        </div>
+        
     );
 }
