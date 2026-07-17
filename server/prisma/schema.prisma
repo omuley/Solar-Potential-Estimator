@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SolarApiCache {
+  id                 Int      @id @default(autoincrement())
+  latitude           Float
+  longitude          Float 
+  monthlyBill        Float
+  monthlyEnergy      Float
+
+  result             Json
+
+  createdAt          DateTime @default(now())
+  
+  @@unique([latitude, longitude, monthlyBill, monthlyEnergy])
+}
