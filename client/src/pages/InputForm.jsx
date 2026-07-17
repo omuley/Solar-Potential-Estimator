@@ -1,4 +1,5 @@
 import { useState } from 'react';
+// import { useNavigate } from 'react-router-dom';
 import AddressSearch from '../components/AddressSearch';
 import BackgroundMap from '../components/BackgroundMap';
 
@@ -6,24 +7,26 @@ export default function InputForm() {
     const [addressData, setAddressData] = useState(null);
     const [monthlyEBill, setEBill] = useState('');
     const [monthlykWh, setkWhUsage] = useState('');
+    // const navigate = useNavigate();
     const [submitting, setSubmitting] = useState(false);
 
     const isValidNumber = (val) => {
-    return val !== '' && !isNaN(val) && Number(val) > 0;
+        return val !== '' && !isNaN(val) && Number(val) > 0;
     };
 
-    const isFormValid =
-    addressData !== null &&
-    isValidNumber(monthlyEBill) &&
-    isValidNumber(monthlykWh);
+    const isFormValid = (vale) => {
+        return addressData !== null &&
+            isValidNumber(monthlyEBill) &&
+            isValidNumber(monthlykWh);  
+    };
     
     const handleSubmit = async (e) => {
         e.preventDefault(); // don't reload page
-        if (!isFormValid) return;
-
+        if (!isFormValid()) return;
         setSubmitting(true);
+
         try {
-            // send data to backend
+            // fetch solar estimate
             const res = await fetch('/api/fetchSolarEstimate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -33,11 +36,14 @@ export default function InputForm() {
                 monthlyEnergyUsageKwh: Number(monthlykWh),
                 }),
             });
+            if (!res.ok) throw new Error(`HTTP request failed... status: ${res.status}`);
+            
             // handle response 
             const result = await res.json();
             console.log(result);
         
-            // TODO: route to results page
+            // route backend response to results page
+            // navigate('/results', { state: result});
         } catch (err) {
             console.error(err);
         } finally {
@@ -46,22 +52,37 @@ export default function InputForm() {
     };
 
     return (
-        <div style={{ position: 'relative', width: '100vw', height: '100vh'}}>
+        <div className="relative w-screen h-screen">
             <BackgroundMap center={addressData ? [addressData.lat, addressData.lng] : undefined} />
+            
             <div style={{ position: 'relative', zIndex: 1, padding: '20px', maxWidth: '400px', backgroundColor: 'rgba(255, 255, 255, 0.9)', borderRadius: '8px', margin: '20px' }}>
                 <form onSubmit={handleSubmit}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <div className="flex flex-col gap-1.5">
                         <label htmlFor="address">Address</label>
-                        <AddressSearch onSelect={setAddressData} />
+                        
+                        {/* show search bar if no address has been selected yet */}
+                        {!addressData ? (
+                            <AddressSearch onSelect={setAddressData} />
+                        ) : (
+                            // address exists, display card
+                            <div className="flex items-start justify-between gap-3 bg-slate-50 border border-slate-200 p-3 rounded-lg shadow-sm animate-fadeIn">
+                                <div className="flex gap-2">
+                                    <p className="text-sm font-medium text-gray-800 leading-relaxed break-words">
+                                        📍 {addressData.address}
+                                    </p>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setAddressData(null)}
+                                    className="text-xs font-semibold text-gray-400 hover:text-red-500 transition-colors pt-0.5"
+                                >
+                                    Change
+                                </button>
+                            </div>
+                        )}
                     </div>
-
-                    {addressData && (
-                        <p>
-                        {addressData.address} ({addressData.lat.toFixed(5)}, {addressData.lng.toFixed(5)})
-                        </p>
-                    )}
                     
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <div className="flex flex-col gap-1.5">
                         <label htmlFor="electricityBill">Monthly Electricity Bill ($)</label>
                         <input
                             id="electricityBill"
@@ -73,7 +94,7 @@ export default function InputForm() {
                             placeholder="e.g. 150"
                         />
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <div className="flex flex-col gap-1.5">
                         <label htmlFor="energyUsage">Monthly Energy Usage (kWh)</label>
                         <input
                             id="energyUsage"
