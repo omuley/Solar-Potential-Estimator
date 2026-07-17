@@ -1,26 +1,32 @@
 //Main API endpoint
 import dotenv from "dotenv";
-import { solarService } from "./services/solarService.js";
-import { optimizer } from "./services/optimizer.js";
-import {financialEngine} from "./services/financialCalculator.js";
-import {getCachedEstimate} from "./services/cacheService.js"
-import {saveEstimate} from "./services/cacheService.js"
+import { solarService } from "../services/solarService.js";
+import { optimizer } from "../services/optimizer.js";
+import {financialEngine} from "../services/financialCalculator.js";
+import {getCachedEstimate} from "../services/cacheService.js"
+import {saveEstimate} from "../services/cacheService.js"
+import express from "express";
+
+const router = express.Router();
 
 dotenv.config();
-app.post("/api/fetchSolarEstimate", async (req, res) => {
+router.post("/fetchSolarEstimate", async (req, res) => {
     try {
         const {lat, lng, monthlyElectricityBill,
             monthlyEnergyUsageKwh,} = req.body;
         //check cache
+        console.log("1. Request received");
         const cached = await getCachedEstimate(lat, lng, monthlyElectricityBill, monthlyEnergyUsageKwh);
+        console.log("2. Cache checked");
+
 
         if(cached) {
-            console.log("Aleady in database!");
             return res.json(cached.result);
         }
 
         //unique inputs:
         const solar = await solarService(lat, lng);
+        console.log("3. Solar API finished");
 
         const optimize = await optimizer(solar.panelConfigs,monthlyElectricityBill, monthlyEnergyUsageKwh)
 
@@ -33,8 +39,10 @@ app.post("/api/fetchSolarEstimate", async (req, res) => {
             monthlyEnergyUsageKwh,
             result
         );
+        console.log("6. Saved to database");
 
         return res.json(result);
+
 
 
     } catch (err) {
@@ -45,6 +53,9 @@ app.post("/api/fetchSolarEstimate", async (req, res) => {
     }
 
 });
+
+export default router;
+
 
 // const cached = await getCachedEstimate(lat, long, monthlyBill, monthlyElectricity);
 
