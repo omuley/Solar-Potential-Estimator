@@ -1,20 +1,21 @@
 import { useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import AddressSearch from '../components/AddressSearch';
 import BackgroundMap from '../components/BackgroundMap';
+import { mockEstimate } from "../mock-estimate";
 
 export default function InputForm() {
     const [addressData, setAddressData] = useState(null);
     const [monthlyEBill, setEBill] = useState('');
     const [monthlykWh, setkWhUsage] = useState('');
-    // const navigate = useNavigate();
     const [submitting, setSubmitting] = useState(false);
+    const navigate = useNavigate();
 
     const isValidNumber = (val) => {
         return val !== '' && !isNaN(val) && Number(val) > 0;
     };
 
-    const isFormValid = (vale) => {
+    const isFormValid = () => {
         return addressData !== null &&
             isValidNumber(monthlyEBill) &&
             isValidNumber(monthlykWh);  
@@ -41,14 +42,22 @@ export default function InputForm() {
             // handle response 
             const result = await res.json();
             console.log(result);
-        
+            
+            // save so ResultsPage can read it, even on refresh
+            sessionStorage.setItem('solarEstimate', JSON.stringify(result));
             // route backend response to results page
-            // navigate('/results', { state: result});
+            navigate('/results');
         } catch (err) {
             console.error(err);
         } finally {
             setSubmitting(false);
         }
+    };
+
+    // TEMPORARY — for testing ResultsPage without hitting the backend
+    const handleTestResults = () => {
+        sessionStorage.setItem('solarEstimate', JSON.stringify(mockEstimate));
+        navigate('/results');
     };
 
     return (
@@ -106,6 +115,11 @@ export default function InputForm() {
                             placeholder="e.g. 900"
                         />
                     </div>
+
+                    {/* TEMPORARY — remove once backend is live */}
+                    <button onClick={handleTestResults}>
+                        (Dev) View Mock Results
+                    </button>
 
                     <button type="submit" disabled={!isFormValid || submitting}>
                         {submitting ? 'Submitting…' : 'Getting Solar Data'}
