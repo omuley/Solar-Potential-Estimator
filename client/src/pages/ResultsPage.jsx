@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, ImageOverlay } from 'react-leaflet'
 import { useNavigate } from 'react-router-dom'
 import 'leaflet/dist/leaflet.css';
 import {
@@ -7,7 +7,6 @@ import {
   Panel,
   Separator,
 } from "react-resizable-panels";
-
 import ROIChart from '../components/charts/ROIChart';
 import NetProfitChart from '../components/charts/NetProfitChart';
 import AnnualSavingsChart from '../components/charts/AnnualSavingsChart';
@@ -24,7 +23,7 @@ const CHART_COMPONENTS = {
 
 export default function ResultsPage() {
     // extract data from state passed from InputForm
-    const [result, setResult] = useState(null);
+    const [res, setRes] = useState(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('ROI');  // defaults to roi graph
@@ -35,14 +34,14 @@ export default function ResultsPage() {
     useEffect(() => {
         const stored = sessionStorage.getItem('solarEstimate');
         if (stored) {
-            setResult(JSON.parse(stored));
+            setRes(JSON.parse(stored));
         }
         setLoading(false);
     }, []);
 
     if (loading) return <p>Loading…</p>;
 
-    if (!result) {
+    if (!res) {
         return (
             <div>
                 <p>No results found. Please submit the form first.</p>
@@ -58,21 +57,21 @@ export default function ResultsPage() {
                     {/* leaflet map w/ pin */}
                     <div className="h-full w-full">
                         <MapContainer 
-                            // center={[result.location.lat, result.location.lng]}
+                            center={[res.lat, res.lng]}
                             zoom={18} 
                             style={{ height: "100%", width: "100%" }}>
                         <TileLayer
                             url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
                             attribution="Tiles © Esri"
                         />
-                        {/* <ImageOverlay
-                            url={result.imageURL}
-                            bounds={result.imageBounds}
-                            opacity={0.8}
-                        /> */}
-                        {/* <Marker position={[result.location.lat, result.location.lng]}>
-                            <Popup>Estimated {result.panelCount} panels</Popup>
-                        </Marker> */}
+                        <ImageOverlay
+                            url={res.imageURL}
+                            bounds={res.imageBounds}
+                            // opacity={0.8}
+                        />
+                        <Marker position={[res.lat, res.lng]}>
+                            <Popup>Estimated {res.panelCount} panels</Popup>
+                        </Marker>
                         </MapContainer>
                     </div>
                 </Panel>
@@ -104,7 +103,7 @@ export default function ResultsPage() {
 
                         {/* Chart — only ONE renders at a time */}
                         <div className="h-96 w-full px-4">
-                            <ActiveChart data={result} />
+                            <ActiveChart data={res} />
                         </div>
                     </div>
                 </Panel>
