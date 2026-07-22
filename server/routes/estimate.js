@@ -5,7 +5,14 @@ import { optimizer } from "../services/optimizer.js";
 import {financialEngine} from "../services/financialCalculator.js";
 import {getCachedEstimate} from "../services/cacheService.js"
 import {saveEstimate} from "../services/cacheService.js"
+import {rasterService } from "../services/solarService.js";
+import {imageToRaster} from "../services/rasterRender.js";
+import {rasterRender} from "../services/rasterRender.js";
+import {uploadImage} from "../services/rasterStorage.js";
+import {generateSignedUrl} from "../services/rasterStorage.js";
+import {randomUUID } from "crypto";
 import express from "express";
+
 
 const router = express.Router();
 
@@ -21,27 +28,52 @@ router.post("/fetchSolarEstimate", async (req, res) => {
 
 
         if(cached) {
-            return res.json(cached.result);
+            let imageUrl = null;
+
+            if (cached.imageKey) {
+                imageUrl = await generateSignedUrl(cached.imageKey);
+            }
+
+            return res.json({
+                ...cached.result,
+                imageUrl
+            }); 
         }
 
-        //unique inputs:
+        //data pipeline
+
         const solar = await solarService(lat, lng);
         console.log("3. Solar API finished");
 
-        const optimize = await optimizer(solar.panelConfigs,monthlyElectricityBill, monthlyEnergyUsageKwh)
 
+        const optimize = await optimizer(solar.panelConfigs,monthlyElectricityBill, monthlyEnergyUsageKwh)
         const result = await financialEngine(optimize, monthlyElectricityBill, monthlyEnergyUsageKwh)
+
+        //image pipeline
+
+        const imageKey = `renders/${randomUUID()}.png`;
+        const annual = await rasterService(lat, lng);  
+        const rasterDims = await imageToRaster(annual.annualFluxUrl);
+        const buffer = await rasterRender(rasterDims.raster, rasterDims.width, rasterDims.height);
+
+        await uploadImage(buffer, imageKey)
 
         await saveEstimate(
             lat,
             lng,
             monthlyElectricityBill,
             monthlyEnergyUsageKwh,
-            result
+            result,
+            imageKey
         );
         console.log("6. Saved to database");
 
-        return res.json(result);
+        const imageUrl = await generateSignedUrl(imageKey);
+
+        return res.json({
+            ...result,
+            imageUrl
+        })
 
 
 
@@ -56,26 +88,3 @@ router.post("/fetchSolarEstimate", async (req, res) => {
 
 export default router;
 
-
-// const cached = await getCachedEstimate(lat, long, monthlyBill, monthlyElectricity);
-
-// if(cached) {
-//     console.log("Aleady in database!: ", cached.latitude);
-// } else {
-
-// const solar = await solarService(lat, long);
-
-// const optimize = await optimizer(solar.panelConfigs,200, 1000)
-
-// const result = await financialEngine(optimize, 200, 1000)
-
-// console.log("final array:", result);
-
-// await saveEstimate(
-//     lat,
-//     long,
-//     monthlyBill,
-//     monthlyElectricity,
-//     result
-//   );  
-// }

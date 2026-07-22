@@ -5,7 +5,7 @@ export async function getCachedEstimate(
     latitude,
     longitude,
     monthlyBill,
-    monthlyEnergy
+    monthlyEnergy,
   ) {
     return await prisma.solarApiCache.findUnique({
       where: {
@@ -24,7 +24,8 @@ export async function getCachedEstimate(
     longitude,
     monthlyBill,
     monthlyEnergy,
-    result
+    result,
+    imageKey
   ) {
     return await prisma.solarApiCache.create({
       data: {
@@ -32,7 +33,8 @@ export async function getCachedEstimate(
         longitude,
         monthlyBill,
         monthlyEnergy,
-        result
+        result,
+        imageKey
       },
     });
   }

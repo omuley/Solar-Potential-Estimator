@@ -1,41 +1,25 @@
 import dotenv from "dotenv";
 // import { geocodeAddress } from "./services/geocodingService.js";
-import { solarService } from "./services/solarService.js";
-import { optimizer } from "./services/optimizer.js";
-import {financialEngine} from "./services/financialCalculator.js";
-import {getCachedEstimate} from "./services/cacheService.js"
-import {saveEstimate} from "./services/cacheService.js"
+import {rasterService } from "./services/solarService.js";
+import {imageToRaster} from "./services/rasterRender.js";
+import {rasterRender} from "./services/rasterRender.js";
+import {uploadImage} from "./services/rasterStorage.js";
+import {generateSignedUrl} from "./services/rasterStorage.js";
+import {randomUUID } from "crypto";
 
 dotenv.config();
 
-// const coords = await geocodeAddress(
-//   "833 Lange St, Mundelein, IL 60060" //test w/ seibel school of cs
-// );
 
 const lat = 42.269815;
 const long = -87.990755;
-let monthlyBill = 205;
-let monthlyElectricity = 1000;
-const cached = await getCachedEstimate(lat, long, monthlyBill, monthlyElectricity);
 
-if(cached) {
 
-    console.log("Aleady in database!: ", cached.latitude);
-} else {
+const filename = `renders/${randomUUID()}.png`;
+const anuual = await rasterService(lat, long);  
+const rasterDims = await imageToRaster(anuual.annualFluxUrl);
+const buffer = await rasterRender(rasterDims.raster, rasterDims.width, rasterDims.height);
 
-const solar = await solarService(lat, long);
+await uploadImage(buffer, filename)
+const imageUrl = await generateSignedUrl(filename);
 
-const optimize = await optimizer(solar.panelConfigs,200, 1000)
-
-const result = await financialEngine(optimize, 200, 1000)
-
-console.log("final array:", result);
-
-await saveEstimate(
-    lat,
-    long,
-    monthlyBill,
-    monthlyElectricity,
-    result
-  );  
-}
+console.log(imageUrl);
