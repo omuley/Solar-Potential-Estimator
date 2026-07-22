@@ -76,7 +76,7 @@ export default function InputForm() {
                             // address exists, display card
                             <div className="flex items-start justify-between gap-3 bg-slate-50 border border-slate-200 p-3 rounded-lg shadow-sm animate-fadeIn">
                                 <div className="flex gap-2">
-                                    <p className="text-sm font-medium text-gray-800 leading-relaxed break-words">
+                                    <p className="text-sm font-medium text-gray-800 leading-relaxed wrap-break-word">
                                         📍 {addressData.address}
                                     </p>
                                 </div>

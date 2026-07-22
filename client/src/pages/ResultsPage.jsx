@@ -1,29 +1,35 @@
 import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import { useNavigate } from 'react-router-dom'
-import {
-    LineChart,
-    Line,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    Legend,
-    ResponsiveContainer,
-} from 'recharts';
 import 'leaflet/dist/leaflet.css';
 import {
   Group,
   Panel,
   Separator,
 } from "react-resizable-panels";
-// import { mockEstimate } from "./mockEstimate";
+
+import ROIChart from '../components/charts/ROIChart';
+import NetProfitChart from '../components/charts/NetProfitChart';
+import AnnualSavingsChart from '../components/charts/AnnualSavingsChart';
+import EnergyUseChart from '../components/charts/EnergyUseChart';
+
+// charts we have
+const CHART_COMPONENTS = {
+      "ROI": ROIChart,
+      "Net Profit": NetProfitChart,
+      "Annual Savings": AnnualSavingsChart,
+      "Energy Use": EnergyUseChart,
+    };
 
 export default function ResultsPage() {
     // extract data from state passed from InputForm
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+    const [activeTab, setActiveTab] = useState('ROI');  // defaults to roi graph
+
+    const ActiveChart = CHART_COMPONENTS[activeTab];
+
 
     useEffect(() => {
         const stored = sessionStorage.getItem('solarEstimate');
@@ -70,24 +76,29 @@ export default function ResultsPage() {
                 <Panel id="charts-panel" defaultSize="50%" minSize="25%" maxSize="75%" order={2}>
                     {/* graphs/charts */}
                     <div className="h-full w-full overflow-y-auto">
-                        <h3>Cumulative Profit Over Time</h3>
-                        <ResponsiveContainer width="100%" height={400}>
-                            <LineChart data={result.yearlyData}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="year" label={{ value: 'Year', position: 'insideBottom', offset: -5 }} />
-                                <YAxis label={{ value: 'Cumulative Profit ($)', angle: -90, position: 'insideLeft' }} />
-                                <Tooltip formatter={(value) => `$${value.toLocaleString()}`} />
-                                <Legend />
-                                <Line
-                                    type="monotone"
-                                    dataKey="cumulativeProfit"
-                                    stroke="#2563eb"
-                                    strokeWidth={2}
-                                    dot={{ r: 3 }}
-                                    name="Cumulative Profit"
-                                />
-                            </LineChart>
-                        </ResponsiveContainer>
+                        <h3>Analysis</h3>
+
+                        {/* Tab buttons */}
+                        <div className="flex gap-2 border-b border-gray-200 mb-4 px-4 pt-4">
+                            {Object.keys(CHART_COMPONENTS).map((key) => (
+                                <button
+                                    key={key}
+                                    onClick={() => setActiveTab(key)}
+                                    className={`px-3 py-2 text-sm ${
+                                        activeTab === key
+                                            ? 'font-semibold border-b-2 border-blue-600'
+                                            : 'text-gray-500'
+                                    }`}
+                                >
+                                    {key}
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Chart — only ONE renders at a time */}
+                        <div className="h-96 w-full px-4">
+                            <ActiveChart data={result} />
+                        </div>
                     </div>
                 </Panel>
             </Group>
