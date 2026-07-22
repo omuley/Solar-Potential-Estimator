@@ -58,17 +58,23 @@ export default function ResultsPage() {
                     <div className="h-full w-full">
                         <MapContainer 
                             center={[res.lat, res.lng]}
-                            zoom={18} 
+                            zoom={18}
+                            zoomControl={true}
+                            dragging={true}
                             style={{ height: "100%", width: "100%" }}>
                         <TileLayer
                             url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
                             attribution="Tiles © Esri"
+                            maxNativeZoom={19}
+                            maxZoom={22}
                         />
-                        <ImageOverlay
-                            url={res.imageURL}
-                            bounds={res.imageBounds}
-                            // opacity={0.8}
-                        />
+                        {res.imageBounds && res.imageUrl && (
+                            <ImageOverlay
+                                url={res.imageUrl}
+                                bounds={res.imageBounds}
+                                opacity="0.8"
+                            />
+                        )}
                         <Marker position={[res.lat, res.lng]}>
                             <Popup>Estimated {res.panelCount} panels</Popup>
                         </Marker>
