@@ -12,6 +12,7 @@ import ROIChart from '../components/charts/ROIChart';
 import NetProfitChart from '../components/charts/NetProfitChart';
 import AnnualSavingsChart from '../components/charts/AnnualSavingsChart';
 import EnergyUseChart from '../components/charts/EnergyUseChart';
+import { COLORS } from '../utils/chartColors';
 
 // charts we have
 const CHART_COMPONENTS = {
@@ -51,22 +52,27 @@ export default function ResultsPage() {
     }
 
     return (
-        <div class="w-screen h-screen fixed inset-0">
+        <div className="w-screen h-screen fixed inset-0">
             <Group orientation="horizontal">
                 <Panel id="map-panel" defaultSize="50%" minSize="25%" maxSize="75%" order={1}>
                     {/* leaflet map w/ pin */}
                     <div className="h-full w-full">
                         <MapContainer 
-                            center={[result.location.lat, result.location.lng]}
+                            // center={[result.location.lat, result.location.lng]}
                             zoom={18} 
                             style={{ height: "100%", width: "100%" }}>
                         <TileLayer
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            attribution="&copy; OpenStreetMap contributors"
+                            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                            attribution="Tiles © Esri"
                         />
-                        <Marker position={[result.location.lat, result.location.lng]}>
+                        {/* <ImageOverlay
+                            url={result.imageURL}
+                            bounds={result.imageBounds}
+                            opacity={0.8}
+                        /> */}
+                        {/* <Marker position={[result.location.lat, result.location.lng]}>
                             <Popup>Estimated {result.panelCount} panels</Popup>
-                        </Marker>
+                        </Marker> */}
                         </MapContainer>
                     </div>
                 </Panel>
@@ -75,8 +81,9 @@ export default function ResultsPage() {
 
                 <Panel id="charts-panel" defaultSize="50%" minSize="25%" maxSize="75%" order={2}>
                     {/* graphs/charts */}
-                    <div className="h-full w-full overflow-y-auto">
-                        <h3>Analysis</h3>
+                    <div className="h-full w-full overflow-y-auto"
+                        style={{background: COLORS.paper}}>
+                        <div><h3>Analysis</h3></div>
 
                         {/* Tab buttons */}
                         <div className="flex gap-2 border-b border-gray-200 mb-4 px-4 pt-4">

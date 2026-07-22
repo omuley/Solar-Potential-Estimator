@@ -121,9 +121,9 @@ export default function InputForm() {
                         (Dev) View Mock Results
                     </button>
 
-                    {/* <button type="submit" disabled={!isFormValid || submitting}>
+                    <button type="submit" disabled={!isFormValid || submitting}>
                         {submitting ? 'Submitting…' : 'Getting Solar Data'}
-                    </button> */}
+                    </button>
                 </form>
             </div>
         </div>
