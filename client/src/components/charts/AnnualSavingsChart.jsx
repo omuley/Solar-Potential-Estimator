@@ -14,7 +14,7 @@ import {
 export default function AnnualSavingsChart({ data }) {
     return (
         <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data.yearlyData} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
+            <BarChart data={data.yearlyProjection} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
                 <CartesianGrid stroke={COLORS.grid} vertical={false} />
                 <XAxis dataKey="year" tick={{ fontSize: 12 }} stroke={COLORS.ink}
                 label={{ value: 'Year', position: 'insideBottom', offset: -2, fontSize: 12 }} />

@@ -55,10 +55,10 @@ export default function InputForm() {
     };
 
     // TEMPORARY — for testing ResultsPage without hitting the backend
-    const handleTestResults = () => {
-        sessionStorage.setItem('solarEstimate', JSON.stringify(mockEstimate));
-        navigate('/results');
-    };
+    // const handleTestResults = () => {
+    //     sessionStorage.setItem('solarEstimate', JSON.stringify(mockEstimate));
+    //     navigate('/results');
+    // };
 
     return (
         <div className="relative w-screen h-screen">
@@ -117,9 +117,9 @@ export default function InputForm() {
                     </div>
 
                     {/* TEMPORARY — remove once backend is live */}
-                    <button onClick={handleTestResults}>
+                    {/* <button onClick={handleTestResults}>
                         (Dev) View Mock Results
-                    </button>
+                    </button> */}
 
                     <button type="submit" disabled={!isFormValid || submitting}>
                         {submitting ? 'Submitting…' : 'Getting Solar Data'}
