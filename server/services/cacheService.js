@@ -25,7 +25,8 @@ export async function getCachedEstimate(
     monthlyBill,
     monthlyEnergy,
     result,
-    imageKey
+    imageKey,
+    imageBounds
   ) {
     return await prisma.solarApiCache.create({
       data: {
@@ -34,7 +35,8 @@ export async function getCachedEstimate(
         monthlyBill,
         monthlyEnergy,
         result,
-        imageKey
+        imageKey,
+        imageBounds
       },
     });
   }

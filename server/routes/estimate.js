@@ -13,7 +13,6 @@ import {generateSignedUrl} from "../services/rasterStorage.js";
 import {randomUUID } from "crypto";
 import express from "express";
 
-
 const router = express.Router();
 
 dotenv.config();
@@ -28,6 +27,7 @@ router.post("/fetchSolarEstimate", async (req, res) => {
 
 
         if(cached) {
+            console.log("Request spotted in database");
             let imageUrl = null;
 
             if (cached.imageKey) {
@@ -35,8 +35,11 @@ router.post("/fetchSolarEstimate", async (req, res) => {
             }
 
             return res.json({
+                ...cached.latitude,
+                ...cached.longitude,
                 ...cached.result,
-                imageUrl
+                imageUrl,
+                ...cached.imageBounds
             }); 
         }
 
@@ -54,9 +57,11 @@ router.post("/fetchSolarEstimate", async (req, res) => {
         const imageKey = `renders/${randomUUID()}.png`;
         const annual = await rasterService(lat, lng);  
         const rasterDims = await imageToRaster(annual.annualFluxUrl);
+        const imageBounds = rasterDims.imageBounds;
         const buffer = await rasterRender(rasterDims.raster, rasterDims.width, rasterDims.height);
 
-        await uploadImage(buffer, imageKey)
+        await uploadImage(buffer, imageKey);
+        
 
         await saveEstimate(
             lat,
@@ -64,15 +69,19 @@ router.post("/fetchSolarEstimate", async (req, res) => {
             monthlyElectricityBill,
             monthlyEnergyUsageKwh,
             result,
-            imageKey
+            imageKey,
+            imageBounds
         );
         console.log("6. Saved to database");
 
         const imageUrl = await generateSignedUrl(imageKey);
 
         return res.json({
+            lat,
+            lng,
             ...result,
-            imageUrl
+            imageUrl,
+            imageBounds,
         })
 
 

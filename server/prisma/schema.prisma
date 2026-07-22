@@ -16,6 +16,7 @@ model SolarApiCache {
 
   result             Json
   imageKey           String?
+  imageBounds        Json?
 
   createdAt          DateTime @default(now())
   

@@ -1,6 +1,11 @@
 import { fromArrayBuffer } from "geotiff";
 import { PNG } from "pngjs";
+import proj4 from "proj4";
 
+proj4.defs(
+    "EPSG:32616",
+    "+proj=utm +zone=16 +datum=WGS84 +units=m +no_defs"
+  );
 
 export async function imageToRaster(annualFluxUrl) {
     // code goes here
@@ -18,15 +23,38 @@ export async function imageToRaster(annualFluxUrl) {
 
     const tiff = await fromArrayBuffer(arrayBuffer); //tell geoTiff library to open file
     const image = await tiff.getImage();
+    const bbox = image.getBoundingBox();
     const raster = await image.readRasters(); //read every pixel value
   
     const width = image.getWidth();
     const height = image.getHeight();
 
+    const [minX, minY, maxX, maxY] = bbox;
+
+    const [west, south] = proj4(
+        "EPSG:32616",
+        "EPSG:4326",
+        [minX, minY]
+    )   ;
+
+    const [east, north] = proj4(
+        "EPSG:32616",
+        "EPSG:4326",
+        [maxX, maxY]    
+    );
+
+    const imageBounds = [
+        [south, west],
+        [north, east]
+    ];
+
+    console.log(imageBounds);
+
     return {
         width,
         height,
         raster,
+        imageBounds
     };
   
   }
