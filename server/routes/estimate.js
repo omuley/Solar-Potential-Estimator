@@ -34,14 +34,18 @@ router.post("/fetchSolarEstimate", async (req, res) => {
                 imageUrl = await generateSignedUrl(cached.imageKey);
             }
 
+
+
             return res.json({
-                ...cached.latitude,
-                ...cached.longitude,
+                lat: cached.latitude,
+                lng: cached.longitude,
                 ...cached.result,
                 imageUrl,
-                ...cached.imageBounds
+                imageBounds: cached.imageBounds
             }); 
+            
         }
+
 
         //data pipeline
 
