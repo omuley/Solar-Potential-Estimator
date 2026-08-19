@@ -17,6 +17,7 @@ const router = express.Router();
 
 dotenv.config();
 router.post("/fetchSolarEstimate", async (req, res) => {
+    const start = performance.now();
     try {
         const {lat, lng, monthlyElectricityBill,
             monthlyEnergyUsageKwh,} = req.body;
@@ -33,7 +34,8 @@ router.post("/fetchSolarEstimate", async (req, res) => {
             if (cached.imageKey) {
                 imageUrl = await generateSignedUrl(cached.imageKey);
             }
-
+            const end = performance.now();
+            console.log(`Response time CACHE: ${(end - start).toFixed(2)} ms`);
 
 
             return res.json({
@@ -48,7 +50,6 @@ router.post("/fetchSolarEstimate", async (req, res) => {
 
 
         //data pipeline
-
         const solar = await solarService(lat, lng);
         console.log("3. Solar API finished");
 
@@ -59,7 +60,7 @@ router.post("/fetchSolarEstimate", async (req, res) => {
         //image pipeline
 
         const imageKey = `renders/${randomUUID()}.png`;
-        const annual = await rasterService(lat, lng);  
+        const annual = await rasterService(lat, lng, solar.maxDims);  
         const rasterDims = await imageToRaster(annual.annualFluxUrl);
         const imageBounds = rasterDims.imageBounds;
         const buffer = await rasterRender(rasterDims.raster, rasterDims.width, rasterDims.height);
@@ -79,6 +80,8 @@ router.post("/fetchSolarEstimate", async (req, res) => {
         console.log("6. Saved to database");
 
         const imageUrl = await generateSignedUrl(imageKey);
+        const end = performance.now();
+        console.log(`Response time API: ${(end - start).toFixed(2)} ms`);
 
         return res.json({
             lat,

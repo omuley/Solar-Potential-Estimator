@@ -26,3 +26,4 @@ const imageUrl = await generateSignedUrl(filename);
 
 console.log(imageUrl);
 console.log(bbox);
+

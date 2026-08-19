@@ -21,13 +21,6 @@ export async function uploadImage(buffer, filename) {
         },
     });
 
-    console.log({
-        accessKey: process.env.AWS_ACCESS_KEY_ID,
-        secretLength: process.env.AWS_SECRET_ACCESS_KEY.length,
-        region: process.env.AWS_REGION,
-        bucket: process.env.S3_BUCKET_NAME,
-    });
-
     const command = new PutObjectCommand({
 
         Bucket: process.env.S3_BUCKET_NAME,

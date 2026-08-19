@@ -101,60 +101,52 @@ export async function imageToRaster(annualFluxUrl) {
   }
 
   function getColor(normalizedValue) {
-    if(normalizedValue < 0.2) { //blue
-
+    if (normalizedValue < 0.2) { // deep purple 
         const t = normalizedValue / 0.2;
 
         return {
-            r: interpolate(0,0,t),
-            g: interpolate(0,255,t),
-            b: interpolate(255,255,t)
+            r: interpolate(70, 120, t),
+            g: interpolate(20, 40, t),
+            b: interpolate(120, 180, t)
         };
 
-    } else if(normalizedValue < 0.4) { //cyan
-
+    } else if (normalizedValue < 0.4) { // purple 
         const t = (normalizedValue - 0.2) / 0.2;
 
         return {
-            r: 0,
-            g: 225,
-            b: interpolate(225,0,t)
+            r: interpolate(120, 220, t),
+            g: interpolate(40, 70, t),
+            b: interpolate(180, 140, t)
         };
 
-    } else if(normalizedValue < 0.6) {
- //green
+    } else if (normalizedValue < 0.6) { // pink 
         const t = (normalizedValue - 0.4) / 0.2;
 
         return {
-            r: interpolate(0,225,t),
-            g: 225,
-            b: 0
+            r: interpolate(220, 255, t),
+            g: interpolate(70, 120, t),
+            b: interpolate(140, 40, t)
         };
 
-    } else if(normalizedValue < 0.8) { //yellow
-
+    } else if (normalizedValue < 0.8) { // orange 
         const t = (normalizedValue - 0.6) / 0.2;
 
         return {
-            r: 225,
-            g: interpolate(225,165,t),
-            b: 0
+            r: 255,
+            g: interpolate(120, 180, t),
+            b: interpolate(40, 20, t)
         };
-        
 
-    } else { //red
-
+    } else { // golden → yellow
         const t = (normalizedValue - 0.8) / 0.2;
 
         return {
-            r: 225,
-            g: interpolate(165,0,t),
-            b: 0
+            r: 255,
+            g: interpolate(180, 235, t),
+            b: interpolate(20, 80, t)
         };
-
     }
-
-  }
+}
 
   function interpolate(start, end, t) {
     return Math.round(

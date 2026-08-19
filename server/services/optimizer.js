@@ -54,9 +54,6 @@ export async function optimizer(panelConfigs, monthlyBill, monthlyUsage) {
 
         //check best
         let netProfit = cumulativeSavings - instC;
-        console.log("Net Profit per Panel:", netProfit);
-        console.log("Panel count:", panelsCount);
-        
 
         if(!bestConfig || netProfit > bestConfig.netProfit) {
             bestConfig = {
