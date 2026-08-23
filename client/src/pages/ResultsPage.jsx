@@ -62,22 +62,22 @@ export default function ResultsPage() {
                             zoomControl={true}
                             dragging={true}
                             style={{ height: "100%", width: "100%" }}>
-                        <TileLayer
-                            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                            attribution="Tiles © Esri"
-                            maxNativeZoom={19}
-                            maxZoom={22}
-                        />
-                        {res.imageBounds && res.imageUrl && (
-                            <ImageOverlay
-                                url={res.imageUrl}
-                                bounds={res.imageBounds}
-                                opacity="0.8"
+                            <TileLayer
+                                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                                attribution="Tiles © Esri"
+                                maxNativeZoom={19}
+                                maxZoom={22}
                             />
-                        )}
-                        <Marker position={[res.lat, res.lng]}>
-                            <Popup>Estimated {res.panelCount} panels</Popup>
-                        </Marker>
+                            {res.imageBounds && res.imageUrl && (
+                                <ImageOverlay
+                                    url={res.imageUrl}
+                                    bounds={res.imageBounds}
+                                    opacity="0.8"
+                                />
+                            )}
+                            <Marker position={[res.lat, res.lng]}>
+                                <Popup>Estimated {res.panelCount} panels</Popup>
+                            </Marker>
                         </MapContainer>
                     </div>
                 </Panel>
