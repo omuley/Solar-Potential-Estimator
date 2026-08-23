@@ -1,31 +1,29 @@
 import dotenv from "dotenv";
-import { geocodeAddress } from "./services/geocodingService.js";
-import { solarService } from "./services/solarService.js";
-import { optimizer } from "./services/optimizer.js";
-import {financialEngine} from "./services/financialCalculator.js"
+// import { geocodeAddress } from "./services/geocodingService.js";
+import {rasterService } from "./services/solarService.js";
+import {imageToRaster} from "./services/rasterRender.js";
+import {rasterRender} from "./services/rasterRender.js";
+import {uploadImage} from "./services/rasterStorage.js";
+import {generateSignedUrl} from "./services/rasterStorage.js";
+import {randomUUID } from "crypto";
 
 dotenv.config();
 
-const coords = await geocodeAddress(
-  "833 Lange St, Mundelein, IL 60060" //test w/ seibel school of cs
-);
 
-const lat = coords.lat
-const long = coords.lng
+const lat = 42.162098;
+const long = -87.953508;
 
-console.log(lat);
 
-const solar = await solarService(lat, long);
+const filename = `renders/${randomUUID()}.png`;
+const anuual = await rasterService(lat, long);  
+const rasterDims = await imageToRaster(anuual.annualFluxUrl);
+const buffer = await rasterRender(rasterDims.raster, rasterDims.width, rasterDims.height);
 
-console.log("Maximum Panels:", solar.maxCount);
+const bbox = rasterDims.bbox;
 
-console.log("Configurations:", solar.panelConfigs.length);
+await uploadImage(buffer, filename)
+const imageUrl = await generateSignedUrl(filename);
 
-const optimize = await optimizer(solar.panelConfigs,200, 1000)
+console.log(imageUrl);
+console.log(bbox);
 
-console.log(optimize);
-console.log("Best configuration:", optimize);
-
-const final_arr = await financialEngine(optimize, 200, 1000)
-
-console.log("final array:", final_arr);
