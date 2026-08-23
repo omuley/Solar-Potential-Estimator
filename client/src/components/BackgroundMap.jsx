@@ -12,11 +12,11 @@ export default function BackgroundMap({ center = [41.8781, -87.6298], zoom = 10 
             style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}
         >
 
-        {/* display map tiles */}
-        <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution="&copy; OpenStreetMap contributors"
-        />
+            {/* display map tiles */}
+            <TileLayer
+                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                attribution="Tiles © Esri"
+            />
         </MapContainer>
     )
 }

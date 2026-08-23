@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
-export default function AddressSearch({ onSelect }) {
+export default function AddressSearch({ onSelect, className }) {
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
     const [isOpen, setIsOpen] = useState(false);  // for dropdown
@@ -99,7 +99,7 @@ export default function AddressSearch({ onSelect }) {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Enter an address"
-                // className=
+                className={className}
             />
             {/* display suggestions in a dropdown list */}
             {isOpen && suggestions.length > 0 && (
