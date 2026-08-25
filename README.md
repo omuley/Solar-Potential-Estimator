@@ -7,7 +7,7 @@
 
 This project is a web application that estimates the solar energy potential for a given location. It leverages Google's Project Sunroof API to gather solar irradiation data and combines it with user-provided electricity bill and usage information to provide a detailed analysis of potential solar energy generation, cost savings, return on investment (ROI), and net profit over time. The application features an interactive map, various financial projection charts, and a user-friendly interface for inputting location and energy consumption data.
 
-## Table of Contents 📚
+## Table of Contents
 
 - [Features](#features)
 - [Tech Stack](#tech-stack)
@@ -21,7 +21,7 @@ This project is a web application that estimates the solar energy potential for 
 - [Important Links](#important-links)
 - [Footer](#footer)
 
-## Features ✨
+## Features
 
 - **Accurate Solar Potential Estimation:** Utilizes Google's Project Sunroof API to get detailed solar irradiation data for specific locations.
 - **Financial Projections:** Calculates estimated installation costs, annual savings, payback period, 25-year ROI, and net profit.
@@ -32,7 +32,7 @@ This project is a web application that estimates the solar energy potential for 
 - **Image Rendering:** Generates and stores a visual representation of solar data (likely a heatmap or similar) in AWS S3.
 - **Responsive Design:** Adaptable UI for different screen sizes.
 
-## Tech Stack 🛠️
+## Tech Stack
 
 - **Frontend:**
   - React
@@ -55,7 +55,7 @@ This project is a web application that estimates the solar energy potential for 
   - ESLint
   - Vitest (for testing)
 
-## Installation ⚙️
+## Installation
 
 **Prerequisites:**
 
@@ -113,7 +113,7 @@ This project is a web application that estimates the solar energy potential for 
 
     The application should be accessible at `http://localhost:5173` (or your Vite default port) with the backend running on `http://localhost:3000`.
 
-## Usage 🚀
+## Usage
 
 This application is designed to help homeowners and solar energy enthusiasts estimate the solar potential of a property and understand the financial implications of installing solar panels.
 
@@ -123,7 +123,7 @@ This application is designed to help homeowners and solar energy enthusiasts est
 - **Solar Installers:** Use the tool for initial consultations to provide clients with data-driven estimates.
 - **Researchers:** Analyze solar potential across different locations.
 
-## How to Use 💡
+## How to Use
 
 1.  **Enter Address:** On the main page, you'll see an address search bar. Start typing an address, and the Google Places API will provide suggestions. Select the correct address.
 2.  **Provide Energy Bill Details:** Input your average monthly electricity bill (in USD) and your average monthly energy usage (in kWh).
@@ -136,7 +136,7 @@ This application is designed to help homeowners and solar energy enthusiasts est
         -   **Annual Savings Chart:** Visualizes yearly savings.
         -   **Energy Use Chart:** Displays estimated solar production vs. actual energy usage.
 
-## Project Structure 📁
+## Project Structure
 
 ```
 Solar-Potential-Estimator/
@@ -187,7 +187,7 @@ Solar-Potential-Estimator/
 └── README.md
 ```
 
-## API Reference 🌐
+## API Reference
 
 ### `POST /api/fetchSolarEstimate`
 
@@ -245,7 +245,7 @@ Solar-Potential-Estimator/
 }
 ```
 
-## Contributing 📝
+## Contributing
 
 Contributions are welcome! Please feel free to:
 
@@ -257,17 +257,17 @@ Contributions are welcome! Please feel free to:
 
 Please ensure your code follows the existing style and includes tests where appropriate.
 
-## License 📄
+## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
-## Important Links 🔗
+## Important Links
 
 -   **Live Demo:** IN PROGRESS
 -   **Google Project Sunroof API:** [https://developers.google.com/maps/documentation/solar/overview](https://developers.google.com/maps/documentation/solar/overview)
 -   **Google Maps Platform:** [https://cloud.google.com/maps-platform](https://cloud.google.com/maps-platform)
 
-## Footer 🏡
+## Footer
 
 This project was developed by [omuley](https://github.com/omuley) and [sliu247](https://github.com/sliu247).
 
